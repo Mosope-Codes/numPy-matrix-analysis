@@ -27,7 +27,6 @@ def convertWordsToArrayOfNumbers(words):
 def convertFileToArray(file):
     with open(file, "r") as openFile:
         fileAsString = openFile.read()
-        print(fileAsString)
         arrayOfNumbersFromLetters = convertWordsToArrayOfNumbers(fileAsString)
 
     return arrayOfNumbersFromLetters
@@ -52,8 +51,8 @@ def encodeMatrix(matrix):
                           [0,  2, 1]]) 
 
     encryptedMatrix = np.dot(secretKey, matrix)
-    encryptedText = np.array2string(encryptedMatrix)
-    print(np.array2string(encryptedMatrix))
+    flattenedMatrix = encryptedMatrix.flatten()
+    encryptedText = np.array2string(flattenedMatrix)
 
     file = open("encoded.txt", "w") 
     file.write(encryptedText)
@@ -66,4 +65,4 @@ print("Welcome to Encrypto-Chat")
 fileConvertedToArray = convertFileToArray("new.txt")
 arrayConvertedtoMatrix = convertArrayToMatrix(fileConvertedToArray)
 encryptedMessage = encodeMatrix(arrayConvertedtoMatrix)
-
+print("Your file has been encrypted, check encoded.txt file")

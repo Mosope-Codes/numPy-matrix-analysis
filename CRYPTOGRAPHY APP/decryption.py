@@ -1,6 +1,7 @@
 import numpy as np
 import random as random
-from encryption import encryptedMessage as encrypt
+import re
+from ast import literal_eval
 
 
 alphabethToLetter = {" " : 0, "a" : 1, "b" : 2, "c" : 3, "d" : 4, "e" : 5,
@@ -17,13 +18,39 @@ alphabethToLetter = {" " : 0, "a" : 1, "b" : 2, "c" : 3, "d" : 4, "e" : 5,
                      ":" : 56, "\n" : 57}
 
 
+def convertFileToArray(file):
+    with open(file, "r") as openFile:
+        fileAsString = openFile.read()
+        arrayWithComma = re.sub("\s+", ",", fileAsString)
+        encodedArray = literal_eval(arrayWithComma)
+        
+    return encodedArray
+
+def convertEncodedTextToArray(encodedText):
+    encodedArray = literal_eval(encodedText.split())
+    return encodedArray
+
+def convertArrayToMatrix(array):
+    matrix = np.zeros((3, (len(array) // 3)), int)
+    flattenedMatrix = matrix.flatten()
+
+    for i, num in enumerate(array):
+        if i < len(array):
+            flattenedMatrix[i] = num
+        else:
+            break
+    reshapedMatrix = flattenedMatrix.reshape(3, (len(array) // 3))
+    
+    return reshapedMatrix
+
 def decodeMatrix(encryptedMatrix):
     secretKey = np.array([[0, 2, 2],
                           [2, 3, 0],
-                          [0,  2, 1]])
+                          [0,  2, 1]]) 
+
     decryptionKey = np.linalg.inv(secretKey)
     decryptedMatrix = np.dot(decryptionKey, encryptedMatrix)
-         
+    
     return decryptedMatrix
 
 def convertDecryptedMatrixToWords(decryptedMatrix):
@@ -42,10 +69,9 @@ def convertDecryptedMatrixToWords(decryptedMatrix):
 
 
 print("Welcome to Decrypto-Chat")
-print(encrypt)
-decodedMatrix = decodeMatrix(encrypt)
+encodedFile = input("Input file name to decrypt: ")
+fileToArray = convertFileToArray(encodedFile)
+encodedMatrix = convertArrayToMatrix(fileToArray)
+decodedMatrix = decodeMatrix(encodedMatrix)
 message = convertDecryptedMatrixToWords(decodedMatrix)
-
-print(message)
-
-# [[ 46,   0,  16,  42,  54,   2], [139,  24,   5,  48,  6,  21], [ 42,   0,   9,  21,  29,   2]]
+print("Your file has been decrypted, check decoded.txt file")
